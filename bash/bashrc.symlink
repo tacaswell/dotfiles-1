@@ -1,0 +1,24 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
+source /usr/share/git/completion/git-completion.bash
+
+
+# make ctrl-s work 'properly'
+stty stop ''
+stty start ''
+stty -ixon
+stty -ixoff
+export PATH=$PATH:~/local_installs/bin/:~/bin
+export PATH=/usr/lib64/ccache/bin:$PATH
+eval "$(hub alias -s)"
+source ~/source/other_source/hub/etc/hub.bash_completion.sh
+alias conda_on='export PATH=/home/tcaswell/mc3/bin:$PATH'
+source ~/source/other_source/bash-git-prompt/gitprompt.sh
+export GITHUB_USER=tacaswell
