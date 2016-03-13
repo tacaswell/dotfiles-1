@@ -10,6 +10,7 @@
 
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/magit/lisp")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/mdboom_gh")
 (require 'magit)
 
 (with-eval-after-load 'info
@@ -312,6 +313,12 @@
 (add-hook 'org-shiftdown-final-hook 'windmove-down)
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 
+(autoload 'org-gis-update-todo "org-github-issue-sync" "Org Github Issue Sync" t)
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (local-set-key (kbd "<f12>") 'org-gis-update-todo)))
+
 ;(setq org-mobile-directory "/scpc:tcaswell@kaylee.homelinux.net:/var/www/mobileorg/webdav/")
 
 (setq TeX-electric-sub-and-superscript t)
@@ -386,6 +393,7 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
    (quote
     (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".dfsl" ".pfsl" ".d64fsl" ".p64fsl" ".lx64fsl" ".lx32fsl" ".dx64fsl" ".dx32fsl" ".fx64fsl" ".fx32fsl" ".sx64fsl" ".sx32fsl" ".wx64fsl" ".wx32fsl" ".fasl" ".ufsl" ".fsl" ".dxl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".idx" ".lof" ".lot" ".glo" ".blg" ".bbl" ".cp" ".cps" ".fn" ".fns" ".ky" ".kys" ".pg" ".pgs" ".tp" ".tps" ".vr" ".vrs" "__pycache__/" ".egg" ".egg-info")))
  '(dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^__.*__$")
+ '(display-time-mode t)
  '(flymake-cursor-error-display-delay 0.5)
  '(flymake-cursor-number-of-errors-to-display 5)
  '(flymake-fringe-indicator-position (quote left-fringe))
@@ -449,7 +457,7 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
  '(org-use-sub-superscripts nil)
  '(package-selected-packages
    (quote
-    (yaml-mode virtualenvwrapper markdown-mode lua-mode jekyll-modes jabber elpy ack)))
+    (json-mode yaml-mode virtualenvwrapper markdown-mode lua-mode jekyll-modes jabber elpy ack)))
  '(py-docstring-style nil)
  '(py-fontify-shell-buffer-p t)
  '(py-ipython-command-args (quote ("--matplotlib")))
@@ -467,6 +475,8 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
  '(python-skeleton-autoinsert t)
  '(rst-level-face-base-light 20)
  '(send-mail-function (quote sendmail-send-it))
+ '(tool-bar-mode nil)
+ '(transient-mark-mode nil)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(user-mail-address "tcaswell@uchicago.edu")
  '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow))))
@@ -475,7 +485,7 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :foundry "unknown" :family "Liberation Mono"))))
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 99 :width normal :foundry "unknown" :family "Hack"))))
  '(flymake-errline ((t (:background "firebrick"))))
  '(flymake-warnline ((t (:background "RoyalBlue4"))))
  '(magit-blame-heading ((t (:background "grey25" :foreground "gray"))))
@@ -545,7 +555,7 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
 
 (defun tac-python-header ()
   (interactive "*")
-  (occur "^\\s-*\\(\\(class\\)\\|\\(def\\)\\)\\|\\(@\\)")
+  (occur "^\\s-*\\(\\(class \\)\\|\\(def \\)\\)\\|\\(@\\)")
   )
 
 (require 'dired-x)
@@ -561,3 +571,31 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
 (setenv "EPICS_CA_ADDR_LIST" "172.17.255.255")
 (setenv "EPICS_CA_MAX_ARRAY_BYTES" "10000000")
 (setenv "DOCKER0_IP" "172.17.0.1")
+
+;; always split into side-by-side windows
+(setq split-height-threshold 9999)
+
+
+(defun reb-query-replace (to-string)
+  "Replace current RE from point with `query-replace-regexp'."
+  (interactive
+   (progn (barf-if-buffer-read-only)
+	  (list (query-replace-read-to (reb-target-binding reb-regexp)
+				       "Query replace"  t))))
+  (with-current-buffer reb-target-buffer
+    (query-replace-regexp (reb-target-binding reb-regexp) to-string)))
+
+(setq org-link-abbrev-alist
+      '(("mpl" . "http://github.com/matplotlib/matplotlib/issues/")
+        ("ast" . "http://github.com/astropy/astropy/issues/")
+        ("gwcs" . "http://github.com/spacetelescope/gwcs/issues/")
+        ("pyasdf" . "http://github.com/spacetelescope/pyasdf/issues/")
+        ("asv" . "http://github.com/spacetelescope/asv/issues/")
+        ("st" . "http://trac.assembla.com/jwst/ticket/")
+        ("ph" . "chrome-extension://kcnhkahnjcbndmmehfkdnkjomaanaooo/widget.html#")
+        ("cr" . "http://github.com/conda/conda-recipes/issues/")
+        ("bk" . "http://github.com/bokeh/bokeh")
+	))
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "chromium")
