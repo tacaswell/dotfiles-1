@@ -177,10 +177,6 @@
 (add-hook 'org-mode-hook (lambda () (flyspell-mode t)))
 
 
-(add-hook 'org-mode-hook (lambda () (local-set-key "\C-cc" 'insert-python-code-block)))
-
-
-
 (setq mail-default-headers "BCC:tcaswell@gmail.com\n")
 (setq mail-from-style 'angles)
 
@@ -319,6 +315,9 @@
           (lambda ()
             (local-set-key (kbd "<f12>") 'org-gis-update-todo)))
 
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(define-key global-map "\C-cc" 'org-capture)
+
 ;(setq org-mobile-directory "/scpc:tcaswell@kaylee.homelinux.net:/var/www/mobileorg/webdav/")
 
 (setq TeX-electric-sub-and-superscript t)
@@ -443,7 +442,13 @@ $~&%[7{5}3(1=9*0)2+4]6!8#`    \
 	(quote indent-relative))
        (local-set-key ""
 		      (quote muse-colors-toggle-inline-images))))) t)
- '(org-agenda-files (quote ("~/notebook/todo.org")))
+ '(org-agenda-files nil)
+ '(org-capture-templates
+   (quote
+    (("m" "Watch a mpl issue" entry
+      (file+headline "~/source/p/notebook/mpl/todo.org" "review")
+      "** WAIT [[mpl:%?]]
+"))))
  '(org-completion-use-ido t)
  '(org-export-with-drawers nil)
  '(org-log-done (quote time))
