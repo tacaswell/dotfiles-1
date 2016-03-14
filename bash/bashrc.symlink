@@ -22,3 +22,4 @@ source ~/source/other_source/hub/etc/hub.bash_completion.sh
 alias conda_on='export PATH=/home/tcaswell/mc3/bin:$PATH'
 source ~/source/other_source/bash-git-prompt/gitprompt.sh
 export GITHUB_USER=tacaswell
+export MPLLOCALFREETYPE=1
